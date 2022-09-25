@@ -20,7 +20,9 @@ export class EmployeesService {
     try {
       return await this.employeeRepository.findOneOrFail(options);
     } catch (error) {
-      throw new NotFoundException(error.message);
+      throw new NotFoundException(
+        `Employee not found. Id: ${options.where['id']}`,
+      );
     }
   }
 

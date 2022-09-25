@@ -3,7 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Put,
   Param,
   Delete,
   HttpCode,
@@ -33,7 +33,7 @@ export class EmployeesController {
     return await this.employeeService.findOneOrFail({ where: { id } });
   }
 
-  @Patch(':id')
+  @Put(':id')
   async update(
     @Param('id', new ParseIntPipe()) id: number,
     @Body() body: UpdateEmployeeDto,

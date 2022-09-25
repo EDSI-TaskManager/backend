@@ -1,4 +1,5 @@
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { hashSync } from 'bcrypt';
 
 export class User {
   @PrimaryGeneratedColumn('increment')
@@ -12,4 +13,9 @@ export class User {
 
   @Column()
   password: string;
+
+  @BeforeInsert()
+  hashPassword() {
+    this.password = hashSync(this.password, 10);
+  }
 }
