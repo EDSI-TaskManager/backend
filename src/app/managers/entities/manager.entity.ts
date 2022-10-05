@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/app/users/entities/users.entity';
 import {
   Column,
@@ -10,14 +11,18 @@ import {
 @Entity({ name: 'managers' })
 export class Manager extends User {
   @Column({ default: 'Manager' })
+  @ApiProperty()
   role: string;
 
   @CreateDateColumn({ name: 'created_at' })
+  @ApiProperty()
   createdAt: string;
 
   @UpdateDateColumn({ name: 'updated_at' })
+  @ApiProperty()
   updatedAt: string;
 
   @DeleteDateColumn({ name: 'deleted_at' })
+  @ApiProperty()
   deletedAt: string;
 }

@@ -8,14 +8,19 @@ import {
   ParseIntPipe,
   Put,
   UseGuards,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { ManagersService } from './managers.service';
 import { CreateManagerDto } from './dto/create-manager.dto';
 import { UpdateManagerDto } from './dto/update-manager.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('api/v1/managers')
 @UseGuards(AuthGuard('jwt'))
+@UseInterceptors(ClassSerializerInterceptor)
+@ApiTags('managers')
 export class ManagersController {
   constructor(private readonly managersService: ManagersService) {}
 
