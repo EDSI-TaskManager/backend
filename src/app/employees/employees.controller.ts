@@ -17,18 +17,25 @@ import { EmployeesService } from './employees.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { IndexEmployeeSwagger } from './swagger/index-employee.swagger';
 import { ShowEmployeeSwagger } from './swagger/show-exployee.swagger';
 import { NotFoundSwagger } from 'src/helpers/swagger/not-found.swagger';
 import { CreateEmployeeSwagger } from './swagger/create-employee.swagger';
 import { BadRequestSwagger } from 'src/helpers/swagger/bad-request.swagger';
 import { UpdateEmployeeSwagger } from './swagger/update-employee.swagger';
+import { UnauthorizedSwagger } from 'src/helpers/swagger/unauthorized.swagger';
 
 @Controller('api/v1/employees')
 @UseGuards(AuthGuard('jwt'))
 @UseInterceptors(ClassSerializerInterceptor)
 @ApiTags('employees')
+@ApiBearerAuth()
 export class EmployeesController {
   constructor(private readonly employeeService: EmployeesService) {}
 
@@ -39,6 +46,11 @@ export class EmployeesController {
     description: 'Employee list returned successfully.',
     type: IndexEmployeeSwagger,
     isArray: true,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedSwagger,
   })
   async findAll() {
     return await this.employeeService.findAll();
@@ -51,6 +63,11 @@ export class EmployeesController {
     description: 'Employee data returned successfully.',
     type: ShowEmployeeSwagger,
     isArray: true,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedSwagger,
   })
   @ApiResponse({
     status: 404,
@@ -73,6 +90,11 @@ export class EmployeesController {
     description: 'Invalid params.',
     type: BadRequestSwagger,
   })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedSwagger,
+  })
   async create(@Body() body: CreateEmployeeDto) {
     return await this.employeeService.create(body);
   }
@@ -88,6 +110,11 @@ export class EmployeesController {
     status: 400,
     description: 'Invalid params.',
     type: BadRequestSwagger,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedSwagger,
   })
   @ApiResponse({
     status: 404,
@@ -106,6 +133,11 @@ export class EmployeesController {
   @ApiResponse({
     status: 204,
     description: 'Employee deleted successfully.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedSwagger,
   })
   @ApiResponse({
     status: 404,

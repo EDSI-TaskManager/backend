@@ -15,18 +15,25 @@ import { ManagersService } from './managers.service';
 import { CreateManagerDto } from './dto/create-manager.dto';
 import { UpdateManagerDto } from './dto/update-manager.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { IndexManagerSwagger } from './swagger/index-manager.swagger';
 import { NotFoundSwagger } from 'src/helpers/swagger/not-found.swagger';
 import { ShowManagerSwagger } from './swagger/show-manager.swagger';
 import { BadRequestSwagger } from 'src/helpers/swagger/bad-request.swagger';
 import { CreateManagerSwagger } from './swagger/create-manager.swagger';
 import { UpdateManagerSwagger } from './swagger/update-manager.swagger';
+import { UnauthorizedSwagger } from 'src/helpers/swagger/unauthorized.swagger';
 
 @Controller('api/v1/managers')
 @UseGuards(AuthGuard('jwt'))
 @UseInterceptors(ClassSerializerInterceptor)
 @ApiTags('managers')
+@ApiBearerAuth()
 export class ManagersController {
   constructor(private readonly managersService: ManagersService) {}
 
@@ -38,6 +45,11 @@ export class ManagersController {
     type: IndexManagerSwagger,
     isArray: true,
   })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedSwagger,
+  })
   async findAll() {
     return this.managersService.findAll();
   }
@@ -48,6 +60,11 @@ export class ManagersController {
     status: 200,
     description: 'Manager data returned successfully.',
     type: ShowManagerSwagger,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedSwagger,
   })
   @ApiResponse({
     status: 404,
@@ -70,6 +87,11 @@ export class ManagersController {
     description: 'Invalid params.',
     type: BadRequestSwagger,
   })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedSwagger,
+  })
   async create(@Body() body: CreateManagerDto) {
     return this.managersService.create(body);
   }
@@ -87,6 +109,11 @@ export class ManagersController {
     type: BadRequestSwagger,
   })
   @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedSwagger,
+  })
+  @ApiResponse({
     status: 404,
     description: 'Manager not found.',
     type: NotFoundSwagger,
@@ -100,6 +127,11 @@ export class ManagersController {
   @ApiResponse({
     status: 204,
     description: 'Manager deleted successfully.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedSwagger,
   })
   @ApiResponse({
     status: 404,
