@@ -20,9 +20,7 @@ export class ManagersService {
     try {
       return await this.managerRepository.findOneOrFail(options);
     } catch (error) {
-      throw new NotFoundException(
-        `Manager not found. Id: ${options.where['id']}`,
-      );
+      throw new NotFoundException(`Manager not found.`);
     }
   }
 

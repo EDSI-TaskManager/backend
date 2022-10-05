@@ -7,12 +7,15 @@ import {
   Delete,
   ParseIntPipe,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { ManagersService } from './managers.service';
 import { CreateManagerDto } from './dto/create-manager.dto';
 import { UpdateManagerDto } from './dto/update-manager.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('api/v1/managers')
+@UseGuards(AuthGuard('jwt'))
 export class ManagersController {
   constructor(private readonly managersService: ManagersService) {}
 
