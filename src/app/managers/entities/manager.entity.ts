@@ -1,5 +1,6 @@
 import { User } from 'src/app/users/entities/users.entity';
 import {
+  Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
@@ -8,6 +9,9 @@ import {
 
 @Entity({ name: 'managers' })
 export class Manager extends User {
+  @Column({ default: 'Manager' })
+  role: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;
 

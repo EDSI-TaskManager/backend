@@ -12,6 +12,9 @@ export class Employee extends User {
   @Column()
   office: string;
 
+  @Column({ default: 'Employee' })
+  role: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;
 
