@@ -5,6 +5,7 @@ import { UsersModule } from './app/users/users.module';
 import { EmployeesModule } from './app/employees/employees.module';
 import { ManagersModule } from './app/managers/managers.module';
 import { AuthModule } from './auth/auth.module';
+import { TeamsModule } from './app/teams/teams.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AuthModule } from './auth/auth.module';
     EmployeesModule,
     ManagersModule,
     AuthModule,
+    TeamsModule,
   ],
   controllers: [],
   providers: [],
