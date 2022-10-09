@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
+import { EmployeesService } from '../employees/employees.service';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { Team } from './entities/team.entity';
@@ -10,6 +11,7 @@ export class TeamsService {
   constructor(
     @InjectRepository(Team)
     private readonly teamRepository: Repository<Team>,
+    private readonly employeeService: EmployeesService,
   ) {}
 
   async findAll() {
@@ -39,5 +41,19 @@ export class TeamsService {
     await this.findOneOrFail({ where: { id } });
 
     await this.teamRepository.softDelete(id);
+  }
+
+  async addEmployee(team_id: number, employee_id: number) {
+    const team = await this.findOneOrFail({
+      where: { id: team_id },
+      relations: ['employees'],
+    });
+    const employee = await this.employeeService.findOneOrFail({
+      where: { id: employee_id },
+    });
+
+    team.addEmployee(employee);
+
+    await this.teamRepository.save(team);
   }
 }

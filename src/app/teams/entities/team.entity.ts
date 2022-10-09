@@ -1,8 +1,10 @@
+import { Employee } from 'src/app/employees/entities/employee.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -15,6 +17,11 @@ export class Team {
   @Column()
   name: string;
 
+  @OneToMany(() => Employee, (employee) => employee.team, {
+    cascade: true,
+  })
+  employees: Employee[];
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;
 
@@ -23,4 +30,11 @@ export class Team {
 
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: string;
+
+  addEmployee(employee: Employee) {
+    if (this.employees == null) {
+      this.employees = new Array<Employee>();
+    }
+    this.employees.push(employee);
+  }
 }

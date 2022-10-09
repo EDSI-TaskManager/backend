@@ -33,6 +33,14 @@ export class TeamsController {
     return this.teamsService.create(body);
   }
 
+  @Post(':team_id/employee/:employee_id')
+  async addEmployee(
+    @Param('team_id', new ParseIntPipe()) team_id: number,
+    @Param('employee_id', new ParseIntPipe()) employee_id: number,
+  ) {
+    return this.teamsService.addEmployee(team_id, employee_id);
+  }
+
   @Put(':id')
   async update(
     @Param('id', new ParseIntPipe()) id: number,
