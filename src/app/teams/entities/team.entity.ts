@@ -1,9 +1,12 @@
 import { Employee } from 'src/app/employees/entities/employee.entity';
+import { Manager } from 'src/app/managers/entities/manager.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -21,6 +24,16 @@ export class Team {
     cascade: true,
   })
   employees: Employee[];
+
+  @ManyToMany(() => Manager, (manager) => manager.teams, {
+    cascade: true,
+  })
+  @JoinTable({
+    name: 'managers_teams',
+    joinColumn: { name: 'team_id' },
+    inverseJoinColumn: { name: 'manager_id' },
+  })
+  managers: Manager[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: string;

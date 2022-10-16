@@ -1,10 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Team } from 'src/app/teams/entities/team.entity';
 import { User } from 'src/app/users/entities/users.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  ManyToMany,
   UpdateDateColumn,
 } from 'typeorm';
 
@@ -13,6 +15,9 @@ export class Manager extends User {
   @Column({ default: 'Manager' })
   @ApiProperty()
   role: string;
+
+  @ManyToMany(() => Team, (team) => team.managers)
+  teams: Team[];
 
   @CreateDateColumn({ name: 'created_at' })
   @ApiProperty()
