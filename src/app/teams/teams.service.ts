@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
 import { EmployeesService } from '../employees/employees.service';
+import { ManagersService } from '../managers/managers.service';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { Team } from './entities/team.entity';
@@ -12,6 +13,7 @@ export class TeamsService {
     @InjectRepository(Team)
     private readonly teamRepository: Repository<Team>,
     private readonly employeeService: EmployeesService,
+    private readonly managerService: ManagersService,
   ) {}
 
   async findAll() {
@@ -26,8 +28,15 @@ export class TeamsService {
     }
   }
 
-  async create(data: CreateTeamDto) {
-    return await this.teamRepository.save(this.teamRepository.create(data));
+  async create(data: CreateTeamDto, userId: number) {
+    const manager = await this.managerService.findOneOrFail({
+      where: { id: userId },
+    });
+
+    const team = this.teamRepository.create(data);
+    team.addManager(manager);
+
+    return await this.teamRepository.save(team);
   }
 
   async update(id: number, data: UpdateTeamDto) {
@@ -53,6 +62,20 @@ export class TeamsService {
     });
 
     team.addEmployee(employee);
+
+    await this.teamRepository.save(team);
+  }
+
+  async addManager(team_id: number, manager_id: number) {
+    const team = await this.findOneOrFail({
+      where: { id: team_id },
+      relations: ['managers'],
+    });
+    const manager = await this.managerService.findOneOrFail({
+      where: { id: manager_id },
+    });
+
+    team.addManager(manager);
 
     await this.teamRepository.save(team);
   }

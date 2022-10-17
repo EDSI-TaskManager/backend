@@ -50,4 +50,11 @@ export class Team {
     }
     this.employees.push(employee);
   }
+
+  addManager(manager: Manager) {
+    if (this.managers == null) {
+      this.managers = new Array<Manager>();
+    }
+    this.managers.push(manager);
+  }
 }
