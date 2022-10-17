@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
 import { Team } from 'src/app/teams/entities/team.entity';
 import { User } from 'src/app/users/entities/users.entity';
 import {
@@ -21,6 +21,7 @@ export class Employee extends User {
   role: string;
 
   @ManyToOne(() => Team, (team) => team.employees)
+  @ApiProperty({ type: () => OmitType(Team, ['managers']) })
   team: Team;
 
   @CreateDateColumn({ name: 'created_at' })

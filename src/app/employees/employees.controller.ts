@@ -62,7 +62,6 @@ export class EmployeesController {
     status: 200,
     description: 'Employee data returned successfully.',
     type: ShowEmployeeSwagger,
-    isArray: true,
   })
   @ApiResponse({
     status: 401,
