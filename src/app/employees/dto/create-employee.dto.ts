@@ -19,7 +19,7 @@ export class CreateEmployeeDto {
   @ApiProperty()
   password: string;
 
-  @IsNotEmpty()
+  @IsNotEmpty() 
   @ApiProperty()
   office: string;
 }
