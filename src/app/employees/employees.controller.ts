@@ -62,7 +62,6 @@ export class EmployeesController {
     status: 200,
     description: 'Employee data returned successfully.',
     type: ShowEmployeeSwagger,
-    isArray: true,
   })
   @ApiResponse({
     status: 401,
@@ -75,7 +74,10 @@ export class EmployeesController {
     type: NotFoundSwagger,
   })
   async findOne(@Param('id', new ParseIntPipe()) id: number) {
-    return await this.employeeService.findOneOrFail({ where: { id } });
+    return await this.employeeService.findOneOrFail({
+      where: { id },
+      relations: ['team'],
+    });
   }
 
   @Post()
