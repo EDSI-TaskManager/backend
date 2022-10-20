@@ -1,4 +1,5 @@
 import { ApiProperty, OmitType } from '@nestjs/swagger';
+import { Task } from 'src/app/tasks/entities/task.entity';
 import { Team } from 'src/app/teams/entities/team.entity';
 import { User } from 'src/app/users/entities/users.entity';
 import {
@@ -6,6 +7,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  ManyToMany,
   ManyToOne,
   UpdateDateColumn,
 } from 'typeorm';
@@ -23,6 +25,9 @@ export class Employee extends User {
   @ManyToOne(() => Team, (team) => team.employees)
   @ApiProperty({ type: () => OmitType(Team, ['managers']) })
   team: Team;
+
+  @ManyToMany(() => Task, (task) => task.employees)
+  tasks: Task[];
 
   @CreateDateColumn({ name: 'created_at' })
   @ApiProperty()

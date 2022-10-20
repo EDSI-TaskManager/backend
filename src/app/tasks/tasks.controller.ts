@@ -13,9 +13,9 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
 } from '@nestjs/common';
-import { EmployeesService } from './employees.service';
-import { CreateEmployeeDto } from './dto/create-employee.dto';
-import { UpdateEmployeeDto } from './dto/update-employee.dto';
+import { TasksService } from './tasks.service';
+import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
 import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBearerAuth,
@@ -23,28 +23,29 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { IndexEmployeeSwagger } from './swagger/index-employee.swagger';
-import { ShowEmployeeSwagger } from './swagger/show-exployee.swagger';
 import { NotFoundSwagger } from 'src/helpers/swagger/not-found.swagger';
-import { CreateEmployeeSwagger } from './swagger/create-employee.swagger';
 import { BadRequestSwagger } from 'src/helpers/swagger/bad-request.swagger';
-import { UpdateEmployeeSwagger } from './swagger/update-employee.swagger';
 import { UnauthorizedSwagger } from 'src/helpers/swagger/unauthorized.swagger';
 
-@Controller('api/v1/employees')
+@Controller('api/v1/tasks')
 @UseGuards(AuthGuard('jwt'))
 @UseInterceptors(ClassSerializerInterceptor)
-@ApiTags('employees')
+@ApiTags('tasks')
 @ApiBearerAuth()
-export class EmployeesController {
-  constructor(private readonly employeeService: EmployeesService) {}
+export class TasksController {
+  constructor(private readonly tasksService: TasksService) {}
+
+  @Post()
+  async create(@Body() createTaskDto: CreateTaskDto) {
+    return this.tasksService.create(createTaskDto);
+  }
 
   @Get()
-  @ApiOperation({ summary: 'List all Employees.' })
+  @ApiOperation({ summary: 'List all Tasks.' })
   @ApiResponse({
     status: 200,
-    description: 'Employee list returned successfully.',
-    type: IndexEmployeeSwagger,
+    description: 'Task list returned successfully.',
+    //type: IndexTaskSwagger,
     isArray: true,
   })
   @ApiResponse({
@@ -53,15 +54,15 @@ export class EmployeesController {
     type: UnauthorizedSwagger,
   })
   async findAll() {
-    return await this.employeeService.findAll();
+    return await this.tasksService.findAll();
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Return an Employee by Id.' })
+  @ApiOperation({ summary: 'Return a Task by Id.' })
   @ApiResponse({
     status: 200,
-    description: 'Employee data returned successfully.',
-    type: ShowEmployeeSwagger,
+    description: 'Task data returned successfully.',
+    //type: ShowTaskSwagger,
   })
   @ApiResponse({
     status: 401,
@@ -70,43 +71,21 @@ export class EmployeesController {
   })
   @ApiResponse({
     status: 404,
-    description: 'Employee not found.',
+    description: 'Task not found.',
     type: NotFoundSwagger,
   })
   async findOne(@Param('id', new ParseIntPipe()) id: number) {
-    return await this.employeeService.findOneOrFail({
+    return await this.tasksService.findOneOrFail({
       where: { id },
-      relations: ['team', 'tasks'],
+      relations: ['employees'],
     });
   }
 
-  @Post()
-  @ApiOperation({ summary: 'Add a new Employee.' })
+  @Post(':task_id/employee/:employee_id')
+  @ApiOperation({ summary: 'Add a Employee to a Task.' })
   @ApiResponse({
-    status: 201,
-    description: 'New Employee created successfully.',
-    type: CreateEmployeeSwagger,
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Invalid params.',
-    type: BadRequestSwagger,
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized',
-    type: UnauthorizedSwagger,
-  })
-  async create(@Body() body: CreateEmployeeDto) {
-    return await this.employeeService.create(body);
-  }
-
-  @Put(':id')
-  @ApiOperation({ summary: 'Update an Employee.' })
-  @ApiResponse({
-    status: 200,
-    description: 'Employee updated successfully.',
-    type: UpdateEmployeeSwagger,
+    status: 204,
+    description: 'Employee added to Task successfully.',
   })
   @ApiResponse({
     status: 400,
@@ -120,26 +99,8 @@ export class EmployeesController {
   })
   @ApiResponse({
     status: 404,
-    description: 'Employee not found.',
+    description: 'Task not found.',
     type: NotFoundSwagger,
-  })
-  async update(
-    @Param('id', new ParseIntPipe()) id: number,
-    @Body() body: UpdateEmployeeDto,
-  ) {
-    return await this.employeeService.update(id, body);
-  }
-
-  @Delete(':id')
-  @ApiOperation({ summary: 'Delete an Employee.' })
-  @ApiResponse({
-    status: 204,
-    description: 'Employee deleted successfully.',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized',
-    type: UnauthorizedSwagger,
   })
   @ApiResponse({
     status: 404,
@@ -147,7 +108,60 @@ export class EmployeesController {
     type: NotFoundSwagger,
   })
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id', new ParseIntPipe()) id: number) {
-    await this.employeeService.delete(id);
+  async addEmployee(
+    @Param('task_id', new ParseIntPipe()) task_id: number,
+    @Param('employee_id', new ParseIntPipe()) employee_id: number,
+  ) {
+    return this.tasksService.addEmployee(task_id, employee_id);
+  }
+
+  @Put(':id')
+  @ApiOperation({ summary: 'Update a Task.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Task updated successfully.',
+    //type: UpdateTaskSwagger,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid params.',
+    type: BadRequestSwagger,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedSwagger,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Task not found.',
+    type: NotFoundSwagger,
+  })
+  async update(
+    @Param('id', new ParseIntPipe()) id: number,
+    @Body() body: UpdateTaskDto,
+  ) {
+    return await this.tasksService.update(id, body);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete a Task.' })
+  @ApiResponse({
+    status: 204,
+    description: 'Task deleted successfully.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedSwagger,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Task not found.',
+    type: NotFoundSwagger,
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id') id: number) {
+    await this.tasksService.delete(id);
   }
 }
