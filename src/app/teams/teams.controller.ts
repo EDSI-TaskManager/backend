@@ -10,6 +10,8 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { TeamsService } from './teams.service';
 import { CreateTeamDto } from './dto/create-team.dto';
@@ -33,6 +35,7 @@ import { UpdateTeamSwagger } from './swagger/update-team.swagger';
 
 @Controller('api/v1/teams')
 @UseGuards(AuthGuard('jwt'))
+@UseInterceptors(ClassSerializerInterceptor)
 @ApiTags('teams')
 @ApiBearerAuth()
 export class TeamsController {
