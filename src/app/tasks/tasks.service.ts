@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
+import { EmployeesService } from '../employees/employees.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task } from './entities/task.entity';
@@ -10,13 +11,13 @@ export class TasksService {
   constructor(
     @InjectRepository(Task)
     private readonly taskRepository: Repository<Task>,
+    private readonly employeeService: EmployeesService,
   ) {}
 
   async findAll() {
     return await this.taskRepository.find();
-    //This action returns all tasks
   }
-  
+
   async findOneOrFail(options: FindOneOptions<Task>) {
     try {
       return await this.taskRepository.findOneOrFail(options);
@@ -26,12 +27,9 @@ export class TasksService {
   }
 
   async create(data: CreateTaskDto) {
-    return await this.taskRepository.save(
-      this.taskRepository.create(data),
-    );
-    //This action adds a new task
+    return await this.taskRepository.save(this.taskRepository.create(data));
   }
-  
+
   async update(id: number, data: UpdateTaskDto) {
     const task = await this.findOneOrFail({ where: { id } });
 
@@ -43,5 +41,19 @@ export class TasksService {
     await this.findOneOrFail({ where: { id } });
 
     await this.taskRepository.softDelete(id);
+  }
+
+  async addEmployee(task_id: number, employee_id: number) {
+    const task = await this.findOneOrFail({
+      where: { id: task_id },
+      relations: ['employees'],
+    });
+    const employee = await this.employeeService.findOneOrFail({
+      where: { id: employee_id },
+    });
+
+    task.addEmployee(employee);
+
+    await this.taskRepository.save(task);
   }
 }

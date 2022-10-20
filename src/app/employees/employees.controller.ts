@@ -76,7 +76,7 @@ export class EmployeesController {
   async findOne(@Param('id', new ParseIntPipe()) id: number) {
     return await this.employeeService.findOneOrFail({
       where: { id },
-      relations: ['team'],
+      relations: ['team', 'tasks'],
     });
   }
 
