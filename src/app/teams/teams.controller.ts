@@ -9,7 +9,7 @@ import {
   Put,
   HttpCode,
   HttpStatus,
-  UseGuards,
+  // UseGuards,
   UseInterceptors,
   ClassSerializerInterceptor,
 } from '@nestjs/common';
@@ -18,7 +18,7 @@ import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { GetUser } from 'src/common/decorators/requests/logged-in-user.decorator';
 import { User } from '../users/entities/users.entity';
-import { AuthGuard } from '@nestjs/passport';
+// import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -34,7 +34,7 @@ import { CreateTeamSwagger } from './swagger/create-team.swagger';
 import { UpdateTeamSwagger } from './swagger/update-team.swagger';
 
 @Controller('api/v1/teams')
-@UseGuards(AuthGuard('jwt'))
+// @UseGuards(AuthGuard('jwt'))
 @UseInterceptors(ClassSerializerInterceptor)
 @ApiTags('teams')
 @ApiBearerAuth()
