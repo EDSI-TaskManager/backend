@@ -28,9 +28,12 @@ import { BadRequestSwagger } from 'src/helpers/swagger/bad-request.swagger';
 import { CreateManagerSwagger } from './swagger/create-manager.swagger';
 import { UpdateManagerSwagger } from './swagger/update-manager.swagger';
 import { UnauthorizedSwagger } from 'src/helpers/swagger/unauthorized.swagger';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/common/enums/role.enum';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 
 @Controller('api/v1/managers')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 @ApiTags('managers')
 @ApiBearerAuth()
@@ -76,6 +79,7 @@ export class ManagersController {
   }
 
   @Post()
+  @Roles(Role.Manager)
   @ApiOperation({ summary: 'Add a new Manager.' })
   @ApiResponse({
     status: 201,
@@ -97,6 +101,7 @@ export class ManagersController {
   }
 
   @Put(':id')
+  @Roles(Role.Manager)
   @ApiOperation({ summary: 'Update a Manager.' })
   @ApiResponse({
     status: 200,
@@ -123,6 +128,7 @@ export class ManagersController {
   }
 
   @Delete(':id')
+  @Roles(Role.Manager)
   @ApiOperation({ summary: 'Delete a Manager.' })
   @ApiResponse({
     status: 204,
