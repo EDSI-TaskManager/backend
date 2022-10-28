@@ -32,9 +32,12 @@ import { NotFoundSwagger } from 'src/helpers/swagger/not-found.swagger';
 import { BadRequestSwagger } from 'src/helpers/swagger/bad-request.swagger';
 import { CreateTeamSwagger } from './swagger/create-team.swagger';
 import { UpdateTeamSwagger } from './swagger/update-team.swagger';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/common/enums/role.enum';
 
 @Controller('api/v1/teams')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 @ApiTags('teams')
 @ApiBearerAuth()
@@ -83,6 +86,7 @@ export class TeamsController {
   }
 
   @Post()
+  @Roles(Role.Manager)
   @ApiOperation({ summary: 'Add a new Team.' })
   @ApiResponse({
     status: 201,
@@ -104,6 +108,7 @@ export class TeamsController {
   }
 
   @Post(':team_id/employee/:employee_id')
+  @Roles(Role.Manager)
   @ApiOperation({ summary: 'Add a Employee to a Team.' })
   @ApiResponse({
     status: 204,
@@ -138,6 +143,7 @@ export class TeamsController {
   }
 
   @Post(':team_id/manager/:manager_id')
+  @Roles(Role.Manager)
   @ApiOperation({ summary: 'Add a Manager to a Team.' })
   @ApiResponse({
     status: 204,
@@ -172,6 +178,7 @@ export class TeamsController {
   }
 
   @Put(':id')
+  @Roles(Role.Manager)
   @ApiOperation({ summary: 'Update a Team.' })
   @ApiResponse({
     status: 200,
@@ -201,6 +208,7 @@ export class TeamsController {
   }
 
   @Delete(':id')
+  @Roles(Role.Manager)
   @ApiOperation({ summary: 'Delete a Team.' })
   @ApiResponse({
     status: 204,
