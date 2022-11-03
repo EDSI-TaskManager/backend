@@ -1,6 +1,8 @@
 import {
   ClassSerializerInterceptor,
   Controller,
+  HttpCode,
+  HttpStatus,
   Post,
   Req,
   UseGuards,
@@ -25,7 +27,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Login.' })
   @ApiBody({ type: LoginBody })
   @ApiResponse({
-    status: 201,
+    status: 200,
     description: 'User logged in successfully.',
     type: AuthLoginSwagger,
   })
@@ -34,6 +36,7 @@ export class AuthController {
     description: MessagesHelper.INVALID_EMAIL_OR_PASSWORD,
     type: LoginUnauthorizedSwagger,
   })
+  @HttpCode(HttpStatus.OK)
   async login(@Req() req: any) {
     return await this.authService.login(req.user);
   }
