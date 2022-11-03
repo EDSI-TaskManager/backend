@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
@@ -25,6 +30,17 @@ export class EmployeesService {
   }
 
   async create(data: CreateEmployeeDto) {
+    const emailExists = await this.employeeRepository.findOne({
+      where: { email: data.email },
+    });
+
+    if (emailExists) {
+      throw new HttpException(
+        'There is already an Employee registered with this email',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     return await this.employeeRepository.save(
       this.employeeRepository.create(data),
     );
@@ -32,6 +48,17 @@ export class EmployeesService {
 
   async update(id: number, data: UpdateEmployeeDto) {
     const employee = await this.findOneOrFail({ where: { id } });
+
+    const emailExists = await this.employeeRepository.findOne({
+      where: { email: data.email },
+    });
+
+    if (emailExists && emailExists.id != employee.id) {
+      throw new HttpException(
+        'There is already an Employee registered with this email',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     this.employeeRepository.merge(employee, data);
     return await this.employeeRepository.save(employee);
