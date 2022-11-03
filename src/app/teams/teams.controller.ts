@@ -81,7 +81,7 @@ export class TeamsController {
   async findOne(@Param('id', new ParseIntPipe()) id: number) {
     return this.teamsService.findOneOrFail({
       where: { id },
-      relations: ['managers'],
+      relations: ['managers', 'employees'],
     });
   }
 

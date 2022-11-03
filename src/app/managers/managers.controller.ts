@@ -75,7 +75,10 @@ export class ManagersController {
     type: NotFoundSwagger,
   })
   async findOne(@Param('id', new ParseIntPipe()) id: number) {
-    return this.managersService.findOneOrFail({ where: { id } });
+    return this.managersService.findOneOrFail({
+      where: { id },
+      relations: ['teams'],
+    });
   }
 
   @Post()
