@@ -83,6 +83,30 @@ export class EmployeesController {
     });
   }
 
+  @Get('email/:email')
+  @ApiOperation({ summary: 'Return an Employee by email.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Employee data returned successfully.',
+    type: ShowEmployeeSwagger,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedSwagger,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Employee not found.',
+    type: NotFoundSwagger,
+  })
+  async findOneByEmail(@Param('email') email: string) {
+    return await this.employeeService.findOneOrFail({
+      where: { email },
+      relations: ['team', 'tasks'],
+    });
+  }
+
   @Post()
   @Roles(Role.Manager)
   @ApiOperation({ summary: 'Add a new Employee.' })

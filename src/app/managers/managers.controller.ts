@@ -81,6 +81,30 @@ export class ManagersController {
     });
   }
 
+  @Get('email/:email')
+  @ApiOperation({ summary: 'Return a Manager by email.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Manager data returned successfully.',
+    type: ShowManagerSwagger,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedSwagger,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Manager not found.',
+    type: NotFoundSwagger,
+  })
+  async findOneByEmail(@Param('email') email: string) {
+    return this.managersService.findOneOrFail({
+      where: { email },
+      relations: ['teams'],
+    });
+  }
+
   @Post()
   @Roles(Role.Manager)
   @ApiOperation({ summary: 'Add a new Manager.' })
