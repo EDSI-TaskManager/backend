@@ -30,9 +30,12 @@ import { CreateEmployeeSwagger } from './swagger/create-employee.swagger';
 import { BadRequestSwagger } from 'src/helpers/swagger/bad-request.swagger';
 import { UpdateEmployeeSwagger } from './swagger/update-employee.swagger';
 import { UnauthorizedSwagger } from 'src/helpers/swagger/unauthorized.swagger';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Role } from 'src/common/enums/role.enum';
 
 @Controller('api/v1/employees')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 @ApiTags('employees')
 @ApiBearerAuth()
@@ -80,7 +83,32 @@ export class EmployeesController {
     });
   }
 
+  @Get('email/:email')
+  @ApiOperation({ summary: 'Return an Employee by email.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Employee data returned successfully.',
+    type: ShowEmployeeSwagger,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedSwagger,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Employee not found.',
+    type: NotFoundSwagger,
+  })
+  async findOneByEmail(@Param('email') email: string) {
+    return await this.employeeService.findOneOrFail({
+      where: { email },
+      relations: ['team', 'tasks'],
+    });
+  }
+
   @Post()
+  @Roles(Role.Manager)
   @ApiOperation({ summary: 'Add a new Employee.' })
   @ApiResponse({
     status: 201,
@@ -102,6 +130,7 @@ export class EmployeesController {
   }
 
   @Put(':id')
+  @Roles(Role.Manager)
   @ApiOperation({ summary: 'Update an Employee.' })
   @ApiResponse({
     status: 200,
@@ -131,6 +160,7 @@ export class EmployeesController {
   }
 
   @Delete(':id')
+  @Roles(Role.Manager)
   @ApiOperation({ summary: 'Delete an Employee.' })
   @ApiResponse({
     status: 204,

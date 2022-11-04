@@ -21,6 +21,8 @@ export class User {
   @Exclude({ toPlainOnly: true })
   password: string;
 
+  role: string;
+
   @BeforeInsert()
   hashPassword() {
     this.password = hashSync(this.password, 10);

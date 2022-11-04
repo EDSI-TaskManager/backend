@@ -9,14 +9,14 @@ import {
   HttpCode,
   HttpStatus,
   ParseIntPipe,
-  // UseGuards,
+  UseGuards,
   UseInterceptors,
   ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
-// import { AuthGuard } from '@nestjs/passport';
+import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -28,7 +28,7 @@ import { BadRequestSwagger } from 'src/helpers/swagger/bad-request.swagger';
 import { UnauthorizedSwagger } from 'src/helpers/swagger/unauthorized.swagger';
 
 @Controller('api/v1/tasks')
-// @UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'))
 @UseInterceptors(ClassSerializerInterceptor)
 @ApiTags('tasks')
 @ApiBearerAuth()

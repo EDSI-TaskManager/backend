@@ -4,6 +4,7 @@ import { EmployeesService } from 'src/app/employees/employees.service';
 import { ManagersService } from 'src/app/managers/managers.service';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/app/users/entities/users.entity';
+import { Role } from 'src/common/enums/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -14,7 +15,7 @@ export class AuthService {
   ) {}
 
   async login(user: User) {
-    const payload = { sub: user.id, email: user.email };
+    const payload = { sub: user.id, email: user.email, role: user.role };
 
     return {
       user,
@@ -38,5 +39,12 @@ export class AuthService {
     if (!isPasswordValid) return null;
 
     return user;
+  }
+
+  async getLoggedInUser(user: User) {
+    if (user.role === Role.Employee)
+      return this.employeeService.findOneOrFail({ where: { id: user.id } });
+    else if (user.role === Role.Manager)
+      return this.managerService.findOneOrFail({ where: { id: user.id } });
   }
 }

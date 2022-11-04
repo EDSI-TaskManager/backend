@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Employee } from 'src/app/employees/entities/employee.entity';
+import { IndexEmployeeSwagger } from 'src/app/employees/swagger/index-employee.swagger';
 
 export class AuthLoginSwagger {
   @ApiProperty()
-  user: Employee;
+  user: IndexEmployeeSwagger;
 
   @ApiProperty()
   token: string;
