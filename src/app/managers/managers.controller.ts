@@ -31,6 +31,7 @@ import { UnauthorizedSwagger } from 'src/helpers/swagger/unauthorized.swagger';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enums/role.enum';
 import { RolesGuard } from 'src/common/guards/roles.guard';
+import { ForbiddenSwagger } from 'src/helpers/swagger/forbidden.swagger';
 
 @Controller('api/v1/managers')
 // @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -131,7 +132,7 @@ export class ManagersController {
   }
 
   @Put(':id')
-  // @Roles(Role.Manager)
+  @Roles(Role.Manager)
   @ApiOperation({ summary: 'Update a Manager.' })
   @ApiResponse({
     status: 200,
@@ -147,6 +148,11 @@ export class ManagersController {
     status: 401,
     description: 'Unauthorized',
     type: UnauthorizedSwagger,
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden',
+    type: ForbiddenSwagger,
   })
   @ApiResponse({
     status: 404,
@@ -169,6 +175,11 @@ export class ManagersController {
     status: 401,
     description: 'Unauthorized',
     type: UnauthorizedSwagger,
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden',
+    type: ForbiddenSwagger,
   })
   @ApiResponse({
     status: 404,
