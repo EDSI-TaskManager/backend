@@ -33,6 +33,7 @@ import { UnauthorizedSwagger } from 'src/helpers/swagger/unauthorized.swagger';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enums/role.enum';
+import { ForbiddenSwagger } from 'src/helpers/swagger/forbidden.swagger';
 
 @Controller('api/v1/employees')
 // @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -174,6 +175,11 @@ export class EmployeesController {
     status: 401,
     description: 'Unauthorized',
     type: UnauthorizedSwagger,
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbbiden',
+    type: ForbiddenSwagger,
   })
   @ApiResponse({
     status: 404,

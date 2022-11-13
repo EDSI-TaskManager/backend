@@ -27,6 +27,7 @@ export class Employee extends User {
   team: Team;
 
   @ManyToMany(() => Task, (task) => task.employees)
+  @ApiProperty({ type: () => [OmitType(Task, ['employees'])] })
   tasks: Task[];
 
   @CreateDateColumn({ name: 'created_at' })
