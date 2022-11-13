@@ -35,7 +35,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enums/role.enum';
 
 @Controller('api/v1/employees')
-@UseGuards(AuthGuard('jwt'), RolesGuard)
+// @UseGuards(AuthGuard('jwt'), RolesGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 @ApiTags('employees')
 @ApiBearerAuth()
@@ -43,6 +43,7 @@ export class EmployeesController {
   constructor(private readonly employeeService: EmployeesService) {}
 
   @Get()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiOperation({ summary: 'List all Employees.' })
   @ApiResponse({
     status: 200,
@@ -60,6 +61,7 @@ export class EmployeesController {
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiOperation({ summary: 'Return an Employee by Id.' })
   @ApiResponse({
     status: 200,
@@ -84,6 +86,7 @@ export class EmployeesController {
   }
 
   @Get('email/:email')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiOperation({ summary: 'Return an Employee by email.' })
   @ApiResponse({
     status: 200,
@@ -108,7 +111,7 @@ export class EmployeesController {
   }
 
   @Post()
-  @Roles(Role.Manager)
+  // @Roles(Role.Manager)
   @ApiOperation({ summary: 'Add a new Employee.' })
   @ApiResponse({
     status: 201,
@@ -130,7 +133,7 @@ export class EmployeesController {
   }
 
   @Put(':id')
-  @Roles(Role.Manager)
+  // @Roles(Role.Manager)
   @ApiOperation({ summary: 'Update an Employee.' })
   @ApiResponse({
     status: 200,
@@ -160,6 +163,7 @@ export class EmployeesController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.Manager)
   @ApiOperation({ summary: 'Delete an Employee.' })
   @ApiResponse({
