@@ -18,6 +18,8 @@ import { MessagesHelper } from 'src/helpers/messages.helper';
 import { LoginUnauthorizedSwagger } from './swagger/login-unauthorized.swagger';
 import { GetUser } from 'src/common/decorators/requests/logged-in-user.decorator';
 import { User } from 'src/app/users/entities/users.entity';
+import { LoggedInUserSwagger } from './swagger/logged-in-user.swagger';
+import { UnauthorizedSwagger } from 'src/helpers/swagger/unauthorized.swagger';
 
 @Controller('api/v1/auth')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -25,8 +27,8 @@ import { User } from 'src/app/users/entities/users.entity';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(AuthGuard('local'))
   @Post('login')
+  @UseGuards(AuthGuard('local'))
   @ApiOperation({ summary: 'Login.' })
   @ApiBody({ type: LoginBody })
   @ApiResponse({
@@ -46,6 +48,17 @@ export class AuthController {
 
   @Get('current-user')
   @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Get current logged-in User.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Logged-in User returned successfully.',
+    type: LoggedInUserSwagger,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: UnauthorizedSwagger,
+  })
   async getLoggedInUser(@GetUser() user: User) {
     return await this.authService.getLoggedInUser(user);
   }
