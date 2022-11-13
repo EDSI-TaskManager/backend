@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
 import { Employee } from 'src/app/employees/entities/employee.entity';
 import { Manager } from 'src/app/managers/entities/manager.entity';
 import {
@@ -26,6 +26,7 @@ export class Team {
   @OneToMany(() => Employee, (employee) => employee.team, {
     cascade: true,
   })
+  @ApiProperty({ type: () => [OmitType(Employee, ['password', 'tasks'])] })
   employees: Employee[];
 
   @ManyToMany(() => Manager, (manager) => manager.teams, {
@@ -36,7 +37,7 @@ export class Team {
     joinColumn: { name: 'team_id' },
     inverseJoinColumn: { name: 'manager_id' },
   })
-  @ApiProperty({ type: () => [Manager] })
+  @ApiProperty({ type: () => [OmitType(Manager, ['password', 'teams'])] })
   managers: Manager[];
 
   @CreateDateColumn({ name: 'created_at' })

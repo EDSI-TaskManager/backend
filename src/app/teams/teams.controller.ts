@@ -35,6 +35,7 @@ import { UpdateTeamSwagger } from './swagger/update-team.swagger';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from 'src/common/enums/role.enum';
+import { ForbiddenSwagger } from 'src/helpers/swagger/forbidden.swagger';
 
 @Controller('api/v1/teams')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -110,6 +111,11 @@ export class TeamsController {
     description: 'Unauthorized',
     type: UnauthorizedSwagger,
   })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden',
+    type: ForbiddenSwagger,
+  })
   async create(@Body() body: CreateTeamDto, @GetUser() user: User) {
     return this.teamsService.create(body, user.id);
   }
@@ -130,6 +136,11 @@ export class TeamsController {
     status: 401,
     description: 'Unauthorized',
     type: UnauthorizedSwagger,
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden',
+    type: ForbiddenSwagger,
   })
   @ApiResponse({
     status: 404,
@@ -165,6 +176,11 @@ export class TeamsController {
     status: 401,
     description: 'Unauthorized',
     type: UnauthorizedSwagger,
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden',
+    type: ForbiddenSwagger,
   })
   @ApiResponse({
     status: 404,
@@ -203,6 +219,11 @@ export class TeamsController {
     type: UnauthorizedSwagger,
   })
   @ApiResponse({
+    status: 403,
+    description: 'Forbidden',
+    type: ForbiddenSwagger,
+  })
+  @ApiResponse({
     status: 404,
     description: 'Team not found.',
     type: NotFoundSwagger,
@@ -225,6 +246,11 @@ export class TeamsController {
     status: 401,
     description: 'Unauthorized',
     type: UnauthorizedSwagger,
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden',
+    type: ForbiddenSwagger,
   })
   @ApiResponse({
     status: 404,
