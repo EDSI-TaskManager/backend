@@ -28,6 +28,21 @@ export class TeamsService {
     }
   }
 
+  async getReport(id: number) {
+    const team = await this.findOneOrFail({
+      where: { id },
+      relations: ['managers'],
+    });
+
+    const employees = await this.employeeService.findAll({
+      relations: ['tasks'],
+    });
+
+    team.employees = employees;
+
+    return team;
+  }
+
   async create(data: CreateTeamDto, userId: number) {
     const manager = await this.managerService.findOneOrFail({
       where: { id: userId },

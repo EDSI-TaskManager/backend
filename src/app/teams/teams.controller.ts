@@ -85,6 +85,13 @@ export class TeamsController {
     });
   }
 
+  @Get(':id/report')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.Manager)
+  async getReport(@Param('id', new ParseIntPipe()) id: number) {
+    return await this.teamsService.getReport(id);
+  }
+
   @Post()
   @Roles(Role.Manager)
   @ApiOperation({ summary: 'Add a new Team.' })

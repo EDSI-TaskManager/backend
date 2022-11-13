@@ -17,8 +17,8 @@ export class EmployeesService {
     private readonly employeeRepository: Repository<Employee>,
   ) {}
 
-  async findAll() {
-    return await this.employeeRepository.find();
+  async findAll(options: any = {}) {
+    return await this.employeeRepository.find(options);
   }
 
   async findOneOrFail(options: FindOneOptions<Employee>) {
